@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pedidos - ERP</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsivo.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo"><img src="assets/logo.png" alt="" onerror="this.style.display='none'"/><span>ERP</span></div>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="clientes.html">Clientes</a>
+        <a href="pedidos.html" class="active">Pedidos</a>
+        <a href="cobrancas.html">Cobranças</a>
+        <a href="relatorios.html">Relatórios</a>
+        <a href="configuracoes.html">Configurações</a>
+      </nav>
+      <div class="sidebar-footer"><button onclick="logout()">Sair</button></div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <h1>Pedidos</h1>
+        <button class="btn" onclick="abrirModalPedido()">+ Novo pedido</button>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <select class="input" id="filtro-status" style="max-width:200px;">
+            <option value="">Todos</option>
+            <option value="orcamento">Orçamento</option>
+            <option value="pendente">Pendente</option>
+            <option value="pago">Pago</option>
+            <option value="entregue">Entregue</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+          <button class="btn btn-secondary" onclick="window.print()">Imprimir lista</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>#</th><th>Cliente</th><th>Total</th><th>Status</th><th>Data</th><th class="actions-col"></th></tr></thead>
+            <tbody id="lista"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal novo/editar pedido -->
+  <div class="modal-backdrop" id="modal-pedido">
+    <div class="modal" style="max-width:800px;">
+      <div class="modal-head"><h3 id="modal-titulo">Novo pedido</h3><button onclick="fecharModal('modal-pedido')">×</button></div>
+      <div class="modal-body">
+        <input type="hidden" id="ped-id"/>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cliente</label>
+            <select class="input" id="ped-cliente"></select>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="input" id="ped-status">
+              <option value="orcamento">Orçamento</option>
+              <option value="pendente">Pendente</option>
+              <option value="pago">Pago</option>
+              <option value="entregue">Entregue</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 style="font-size:14px;margin:12px 0 6px;">Itens</h3>
+        <div class="form-row-3" style="grid-template-columns: 2fr 1fr 1fr auto;">
+          <select class="input" id="item-produto"></select>
+          <input class="input" type="number" id="item-qtd" placeholder="Qtd" step="0.001" value="1"/>
+          <input class="input" type="number" id="item-preco" placeholder="Preço" step="0.01"/>
+          <button class="btn" onclick="addItem()">Adicionar</button>
+        </div>
+        <div class="table-wrap" style="margin-top:10px;">
+          <table class="data">
+            <thead><tr><th>Produto</th><th>Qtd</th><th>Preço</th><th>Subtotal</th><th></th></tr></thead>
+            <tbody id="itens-lista"></tbody>
+          </table>
+        </div>
+
+        <div class="form-row" style="margin-top:12px;">
+          <div class="form-group"><label>Desconto (R$)</label><input class="input" type="number" step="0.01" id="ped-desc" value="0" oninput="recalcular()"/></div>
+          <div class="form-group"><label>Total</label><input class="input" id="ped-total" readonly/></div>
+        </div>
+        <div class="form-group"><label>Observações</label><textarea id="ped-obs" rows="2"></textarea></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" onclick="fecharModal('modal-pedido')">Cancelar</button>
+        <button class="btn" onclick="salvarPedido()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Área de impressão de pedido -->
+  <div id="area-impressao" style="display:none;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/pedidos.js"></script>
+</body>
+</html>

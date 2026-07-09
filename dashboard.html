@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - ERP</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsivo.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <img src="assets/logo.png" alt="logo" onerror="this.style.display='none'"/>
+        <span>ERP</span>
+      </div>
+      <nav>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="clientes.html">Clientes</a>
+        <a href="pedidos.html">Pedidos</a>
+        <a href="cobrancas.html">Cobranças</a>
+        <a href="relatorios.html">Relatórios</a>
+        <a href="configuracoes.html">Configurações</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button onclick="logout()">Sair</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <h1>Dashboard</h1>
+        <div class="user" id="user-info"></div>
+      </div>
+
+      <div class="metrics" id="metrics"></div>
+
+      <div class="card">
+        <h2>Agenda de cobranças</h2>
+        <div id="agenda"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

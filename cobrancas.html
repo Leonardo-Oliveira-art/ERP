@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cobranças - ERP</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsivo.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo"><img src="assets/logo.png" alt="" onerror="this.style.display='none'"/><span>ERP</span></div>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="clientes.html">Clientes</a>
+        <a href="pedidos.html">Pedidos</a>
+        <a href="cobrancas.html" class="active">Cobranças</a>
+        <a href="relatorios.html">Relatórios</a>
+        <a href="configuracoes.html">Configurações</a>
+      </nav>
+      <div class="sidebar-footer"><button onclick="logout()">Sair</button></div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <h1>Contas a Receber</h1>
+        <button class="btn" onclick="abrirModalCobranca()">+ Nova cobrança</button>
+      </div>
+
+      <div class="card">
+        <h2>Resumo do cliente</h2>
+        <div class="toolbar">
+          <select class="input" id="filtro-cliente"></select>
+        </div>
+        <div id="resumo-cli"></div>
+      </div>
+
+      <div class="card">
+        <h2>Todas as cobranças</h2>
+        <div class="toolbar">
+          <select class="input" id="filtro-sit" style="max-width:200px;">
+            <option value="">Todas</option>
+            <option value="pendente">Pendentes</option>
+            <option value="pago">Pagas</option>
+            <option value="cancelado">Canceladas</option>
+          </select>
+        </div>
+        <div class="table-wrap"><table class="data">
+          <thead><tr><th>Cliente</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Situação</th><th>Atraso</th><th class="actions-col"></th></tr></thead>
+          <tbody id="lista"></tbody>
+        </table></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modal-cob">
+    <div class="modal">
+      <div class="modal-head"><h3 id="modal-titulo">Nova cobrança</h3><button onclick="fecharModal('modal-cob')">×</button></div>
+      <div class="modal-body">
+        <input type="hidden" id="cb-id"/>
+        <div class="form-group"><label>Cliente</label><select class="input" id="cb-cliente"></select></div>
+        <div class="form-group"><label>Descrição</label><input class="input" id="cb-desc"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>Valor</label><input class="input" type="number" step="0.01" id="cb-valor" required/></div>
+          <div class="form-group"><label>Vencimento</label><input class="input" type="date" id="cb-venc" required/></div>
+        </div>
+        <div class="form-group"><label>Situação</label>
+          <select class="input" id="cb-sit">
+            <option value="pendente">Pendente</option>
+            <option value="pago">Pago</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-secondary" onclick="fecharModal('modal-cob')">Cancelar</button>
+        <button class="btn" onclick="salvar()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/cobrancas.js"></script>
+</body>
+</html>

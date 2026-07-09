@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatórios - ERP</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsivo.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo"><img src="assets/logo.png" alt="" onerror="this.style.display='none'"/><span>ERP</span></div>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="clientes.html">Clientes</a>
+        <a href="pedidos.html">Pedidos</a>
+        <a href="cobrancas.html">Cobranças</a>
+        <a href="relatorios.html" class="active">Relatórios</a>
+        <a href="configuracoes.html">Configurações</a>
+      </nav>
+      <div class="sidebar-footer"><button onclick="logout()">Sair</button></div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <h1>Relatórios</h1>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <select class="input" id="tipo" style="max-width:280px;">
+            <option value="produtos">Produtos</option>
+            <option value="clientes">Clientes</option>
+            <option value="estoque">Estoque (situação atual)</option>
+            <option value="entradas">Entradas de estoque</option>
+            <option value="saidas">Saídas de estoque</option>
+            <option value="pedidos">Pedidos</option>
+            <option value="cobrancas">Cobranças</option>
+          </select>
+          <button class="btn" onclick="gerar()">Gerar</button>
+          <button class="btn btn-secondary" onclick="window.print()">Imprimir / Salvar PDF</button>
+        </div>
+        <div id="relatorio"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/relatorios.js"></script>
+</body>
+</html>

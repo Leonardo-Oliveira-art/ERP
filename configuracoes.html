@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Configurações - ERP</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsivo.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo"><img src="assets/logo.png" alt="" onerror="this.style.display='none'"/><span>ERP</span></div>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="estoque.html">Estoque</a>
+        <a href="clientes.html">Clientes</a>
+        <a href="pedidos.html">Pedidos</a>
+        <a href="cobrancas.html">Cobranças</a>
+        <a href="relatorios.html">Relatórios</a>
+        <a href="configuracoes.html" class="active">Configurações</a>
+      </nav>
+      <div class="sidebar-footer"><button onclick="logout()">Sair</button></div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <h1>Configurações</h1>
+      </div>
+
+      <div class="card">
+        <h2>Dados da empresa</h2>
+        <form id="form-empresa">
+          <div class="form-row">
+            <div class="form-group"><label>Nome da empresa</label><input class="input" id="e-nome"/></div>
+            <div class="form-group"><label>Nome fantasia</label><input class="input" id="e-fant"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>CPF/CNPJ</label><input class="input" id="e-doc"/></div>
+            <div class="form-group"><label>Email</label><input class="input" type="email" id="e-email"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Telefone</label><input class="input" id="e-tel"/></div>
+            <div class="form-group"><label>WhatsApp</label><input class="input" id="e-wpp"/></div>
+          </div>
+          <div class="form-group"><label>Endereço</label><input class="input" id="e-end"/></div>
+          <div class="form-row-3">
+            <div class="form-group"><label>Cidade</label><input class="input" id="e-cid"/></div>
+            <div class="form-group"><label>Estado</label><input class="input" id="e-uf" maxlength="2"/></div>
+            <div class="form-group"><label>CEP</label><input class="input" id="e-cep"/></div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group"><label>Logo</label><input class="input" type="file" id="e-logo" accept="image/*"/></div>
+            <div class="form-group"><label>Cor primária</label><input class="input" type="color" id="e-cor1" value="#2563eb"/></div>
+            <div class="form-group"><label>Cor secundária</label><input class="input" type="color" id="e-cor2" value="#1e293b"/></div>
+          </div>
+          <button type="button" class="btn" onclick="salvarEmpresa()">Salvar</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Segurança da conta</h2>
+        <div class="form-group"><label>Nova senha</label><input class="input" type="password" id="nova-senha"/></div>
+        <button class="btn" onclick="alterarSenha()">Alterar senha</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    let USER = null;
+    (async () => {
+      USER = await requireAuth();
+      if (!USER) return;
+      await applyEmpresaTheme();
+      await carregar();
+    })();
+
+    async function carregar() {
+      const { data } = await supabase.from("empresa").select("*").maybeSingle();
+      if (!data) return;
+      document.getElementById("e-nome").value = data.nome || "";
+      document.getElementById("e-fant").value = data.nome_fantasia || "";
+      document.getElementById("e-doc").value = data.cpf_cnpj || "";
+      document.getElementById("e-email").value = data.email || "";
+      document.getElementById("e-tel").value = data.telefone || "";
+      document.getElementById("e-wpp").value = data.whatsapp || "";
+      document.getElementById("e-end").value = data.endereco || "";
+      document.getElementById("e-cid").value = data.cidade || "";
+      document.getElementById("e-uf").value = data.estado || "";
+      document.getElementById("e-cep").value = data.cep || "";
+      if (data.cor_primaria) document.getElementById("e-cor1").value = data.cor_primaria;
+      if (data.cor_secundaria) document.getElementById("e-cor2").value = data.cor_secundaria;
+    }
+
+    async function salvarEmpresa() {
+      const file = document.getElementById("e-logo").files[0];
+      let logo_url = null;
+      if (file) logo_url = await uploadArquivo(file, "logos");
+
+      const payload = {
+        owner_id: USER.id,
+        nome: document.getElementById("e-nome").value.trim() || null,
+        nome_fantasia: document.getElementById("e-fant").value.trim() || null,
+        cpf_cnpj: document.getElementById("e-doc").value.trim() || null,
+        email: document.getElementById("e-email").value.trim() || null,
+        telefone: document.getElementById("e-tel").value.trim() || null,
+        whatsapp: document.getElementById("e-wpp").value.trim() || null,
+        endereco: document.getElementById("e-end").value.trim() || null,
+        cidade: document.getElementById("e-cid").value.trim() || null,
+        estado: document.getElementById("e-uf").value.trim() || null,
+        cep: document.getElementById("e-cep").value.trim() || null,
+        cor_primaria: document.getElementById("e-cor1").value,
+        cor_secundaria: document.getElementById("e-cor2").value,
+      };
+      if (logo_url) payload.logo_url = logo_url;
+
+      // Upsert por owner_id
+      const { error } = await supabase.from("empresa").upsert(payload, { onConflict: "owner_id" });
+      if (error) return toast(error.message, "erro");
+      toast("Configurações salvas!", "sucesso");
+      await applyEmpresaTheme();
+    }
+
+    async function alterarSenha() {
+      const s = document.getElementById("nova-senha").value;
+      if (!s || s.length < 6) return toast("Mínimo 6 caracteres", "erro");
+      const { error } = await supabase.auth.updateUser({ password: s });
+      if (error) return toast(error.message, "erro");
+      toast("Senha alterada", "sucesso");
+      document.getElementById("nova-senha").value = "";
+    }
+  </script>
+</body>
+</html>
